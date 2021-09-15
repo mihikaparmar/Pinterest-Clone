@@ -1,37 +1,19 @@
 import React,{useState} from 'react';
-import axios from 'axios';
+import './App.css';
 
 
+export default function Api(props) {
+    const [value,setValue]=useState(" ");
+    const [results,setResults]=useState([])
+    const fetchImages=()=>{
+        fetch(`https://api.unsplash.com/photos/random/?client_id=HxtClWTy8gGp5ursIaYlNRl_6jgIfAc9RLHQ4ZJml3M&query=${value}`)
+        .then(res=>res.json())
+        .then  (data=>{
+            console.log(data)
+            setResults(data.results)
 
-
-export default function Navbar() {
-  const [photo, setPhoto] = useState("");
-  const [clientId, setClientId] = useState("HxtClWTy8gGp5ursIaYlNRl_6jgIfAc9RLHQ4ZJml3M");
-  const [result, setResult] = useState([]);
-  
-   function handleChange(event){
-     setPhoto(event.target.value);
-     //console.log(event.target.value);
-
-
-   }
-  
-   function onKeyUp(event){
-    if (event.charCode === 13) {
-      console.log("hi");
-      const url="https://api.unsplash.com/search/photos?page=1&query="+photo+"&client_id="+clientId;
-      axios.get(url)
-      .then((respone)=>{
-        console.log(respone);
-        setResult(respone.data.result);
-      }
-      )
-
-
+        })
     }
-
-     
-   }
     let style1={
         fontWeight: "1000",
          color: "white",
@@ -66,13 +48,9 @@ export default function Navbar() {
         height: "25px" ,
          width: "25px"
     };
-    
-
-    
     return (
-       <>
-            <div>
-           
+        
+        <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <a className="navbar-brand" href="/"><img src="pinterest.png" alt="" style={stylenavbar}/></a>
@@ -82,10 +60,10 @@ export default function Navbar() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/"  style={style1}>Home</a>
+                <a className="nav-link active" aria-current="page" href="/"  style={style1}>{props.Home}</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link bachu" href="/" style={style2}>Today</a>
+                <a className="nav-link bachu" href="/" style={style2}>{props.Today}</a>
               </li>
              
             </ul>
@@ -94,7 +72,7 @@ export default function Navbar() {
                 <svg className="gUZ B9u U9O kVc searchba" height="16" width="16" viewBox="0 0 24 24" aria-label="Search icon" role="img"><path d="M10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6m13.12 2.88l-4.26-4.26A9.842 9.842 0 0 0 20 10c0-5.52-4.48-10-10-10S0 4.48 0 10s4.48 10 10 10c1.67 0 3.24-.41 4.62-1.14l4.26 4.26a3 3 0 0 0 4.24 0 3 3 0 0 0 0-4.24"></path></svg>
               </div>
                 
-              <input className="form-control me-2" type="text" onChange={handleChange} onKeyPress={onKeyUp}   placeholder="Search" aria-label="Search" style={style3}/>
+              <input className="form-control me-2" type="search" value={value} onChange={(e)=>setValue(e.target.value)} placeholder="   Search" aria-label="Search" style={style3}/>
             </form>
             <div className="container column d-flex">
             <svg className="gUZ B9u U9O kVc logo1" height="24" width="24" viewBox="0 0 24 24" aria-hidden="true" aria-label="" role="img"><path d="M12 24c-1.66 0-3-1.34-3-3h6c0 1.66-1.34 3-3 3zm7-10.83c1.58 1.52 2.67 3.55 3 5.83H2c.33-2.28 1.42-4.31 3-5.83V7c0-3.87 3.13-7 7-7s7 3.13 7 7v6.17z"></path></svg>
@@ -103,38 +81,24 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
-     { result.map((photo=>{
-         return <div className="grid">
-         <div className="g-col-6 mx-5 my-5"><div
-         className="card  "
-         style={{
-           height: "450px",
-           width: "250px",
-           border: "2px solid whitte",
-           borderRadius: "20px",
-         }}
-       >
-         <img
-           className="card-img-top"
-           //key={id}
-           src={photo.url}
-           alt=".."
-           style={{
-             height: "700px",
-             width: "250px",
-             border: "2px solid whitte",
-             borderRadius: "20px",
-           }}
-         />
-         </div>
-       </div>
-       </div>
-      }))}
-     
-      
+    
+           
+
+            <button className="btn-primary" onClick={()=>fetchImages()}>click here
+
+            </button>
+            <div className="gallery">
+                {
+                    results.map((item)=>{
+                        return <img key={item.id} src={item.urls.regular}/>
+                    })
+                }
             </div>
-
-
-       </>
+        </div>
     )
 }
+
+Api.defaultProps = {
+    Home: 'Home',
+    Today: 'Today'
+  };
